@@ -25,7 +25,7 @@ public class DemoActivity extends AppCompatActivity {
         fillBlankView = findViewById(R.id.fbvTest);
         fillBlankView.setFillText(mTestStr);
         findViewById(R.id.btn_submit).setOnClickListener(view -> {
-            Toast.makeText(this, fillBlankView.getAnswerText(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, fillBlankView.getPlainText(), Toast.LENGTH_LONG).show();
         });
     }
 }

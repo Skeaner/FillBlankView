@@ -14,8 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-
-import androidx.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by Skean on 21/6/4.
@@ -104,9 +103,15 @@ public class FillBlankView extends RelativeLayout {
         spansManager.doFillBlank(fillText);
     }
 
-    public String getAnswerText() {
+    public List<String> getAnswers() {
         spansManager.setLastCheckedSpanText(etInput.getText().toString());
-        return spansManager.getMyAnswer().toString();
+        return spansManager.getMyAnswers();
     }
+
+    public String getPlainText() {
+        spansManager.setData(etInput.getText().toString(), null, spansManager.mOldSpan);
+        return  tvContent.getText().toString();
+    }
+
 
 }

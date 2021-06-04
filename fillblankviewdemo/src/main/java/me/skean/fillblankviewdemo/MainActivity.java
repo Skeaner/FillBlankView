@@ -55,6 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private String getMyAnswerStr(){
         mSpansManager.setLastCheckedSpanText(mEtInput.getText().toString());
-        return mSpansManager.getMyAnswer().toString();
+        return mSpansManager.getMyAnswers().toString();
     }
 }

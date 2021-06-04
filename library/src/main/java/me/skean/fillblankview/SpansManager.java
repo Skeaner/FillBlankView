@@ -213,7 +213,7 @@ public class SpansManager {
 
     }
 
-    public List<String> getMyAnswer() {
+    public List<String> getMyAnswers() {
         List<String> myAnswerList = new ArrayList<>();
         for (int i = 0; i < mSpans.size(); i++) {
             myAnswerList.add(mSpans.get(i).mText);
