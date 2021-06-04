@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -11,6 +12,8 @@ import android.util.TypedValue;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 
@@ -70,15 +73,31 @@ public class FillBlankView extends RelativeLayout {
 
     @Override
     protected Parcelable onSaveInstanceState() {
-        return super.onSaveInstanceState();
-
+        spansManager.setData(etInput.getText().toString(), null, spansManager.mOldSpan);
+        etInput.setText("");
+        etInput.clearFocus();
+        ArrayList<CharSequence> spanList = new ArrayList<>();
+        for (ReplaceSpan mSpan : spansManager.mSpans) {
+            spanList.add(mSpan.mText);
+        }
+        Bundle bundle =  new Bundle();
+        bundle.putCharSequenceArrayList("mSpans", spanList);
+        bundle.putParcelable("parents",  super.onSaveInstanceState());
+        return  bundle;
     }
 
 
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
+        Bundle bundle = (Bundle) state;
+        ArrayList<CharSequence> list  = bundle.getCharSequenceArrayList("mSpans");
+        for (int i = 0; i < list.size(); i++) {
+            spansManager.mSpans.get(i).mText = list.get(i).toString();
+        }
+        Parcelable  parentState = bundle.getParcelable("parents");
+        super.onRestoreInstanceState(parentState);
+        etInput.setText(null);
     }
 
     public void setFillText(String fillText) {
