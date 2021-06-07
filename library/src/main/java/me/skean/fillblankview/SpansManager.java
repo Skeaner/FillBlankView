@@ -4,12 +4,14 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputType;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
+import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -44,6 +46,9 @@ public class SpansManager {
     private float inputTextSize;
     private int inputTextColor;
 
+    private SparseIntArray inputTypeArray = new SparseIntArray();
+    private int defaultInputType = InputType.TYPE_CLASS_TEXT;
+
     public SpansManager(TextView tv,
                         EditText et,
                         float inputTextSize,
@@ -75,7 +80,7 @@ public class SpansManager {
                     span.mText = "";
                     span.id = index++;
                     mSpans.add(span);
-                    output.setSpan(span, output.length() -1, output.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    output.setSpan(span, output.length() - 1, output.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
         });
@@ -182,7 +187,7 @@ public class SpansManager {
     }
 
     //设置EditText填空题中的相对位置
-    public void setEtXY(RectF rf) {
+    public void setEtXY(RectF rf, int id) {
         //设置et w,h的值
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mEt.getLayoutParams();
         lp.width = (int) (rf.right - rf.left);
@@ -191,6 +196,7 @@ public class SpansManager {
         lp.leftMargin = (int) (mTv.getLeft() + rf.left);
         lp.topMargin = (int) (mTv.getTop() + rf.top);
         mEt.setLayoutParams(lp);
+        mEt.setInputType(inputTypeArray.get(id, defaultInputType));
         //获取焦点，弹出软键盘
         mEt.setFocusable(true);
         mEt.requestFocus();
@@ -239,5 +245,10 @@ public class SpansManager {
         if (mCheckedSpan != null) {
             mCheckedSpan.mText = editText;
         }
+    }
+
+    public void setInputType(int defaultInputType, SparseIntArray inputTypeArray){
+        this.defaultInputType =defaultInputType;
+        this.inputTypeArray = inputTypeArray;
     }
 }

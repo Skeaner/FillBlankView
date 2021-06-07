@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -64,7 +66,7 @@ public class FillBlankView extends RelativeLayout {
             //通过rf计算出et当前应该显示的位置
             RectF rf = spansManager.drawSpanRect(span);
             //设置EditText填空题中的相对位置
-            spansManager.setEtXY(rf);
+            spansManager.setEtXY(rf, id);
             spansManager.setSpanChecked(id);
         });
     }
@@ -121,6 +123,10 @@ public class FillBlankView extends RelativeLayout {
             }
         }
         return builder.toString();
+    }
+
+    public void setInputType(int defaultInputType, SparseIntArray inputTypeArray){
+        spansManager.setInputType(defaultInputType, inputTypeArray);
     }
 
 }
