@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
@@ -48,7 +47,7 @@ public class FillBlankView extends RelativeLayout {
         float lineSpacing = a.getFloat(R.styleable.FillBlankView_fbvLineSpacingMultiplier, 1.4f);
         float inputTextSize = a.getDimension(R.styleable.FillBlankView_fbvInputTextSize, DensityUtils.sp2px(context, 15));
         int inputTextColor = a.getColor(R.styleable.FillBlankView_fbvInputTextColor, Color.BLACK);
-        blankLength = (int) a.getDimension(R.styleable.FillBlankView_fbvBlankWidth, DensityUtils.dp2px(context, 80));
+        blankLength = (int) a.getDimension(R.styleable.FillBlankView_fbvDefaultBlankWidth, DensityUtils.dp2px(context, 80));
         tvContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
         tvContent.setTextColor(contentTextColor);
         tvContent.setLineSpacing(0, lineSpacing);
@@ -105,7 +104,12 @@ public class FillBlankView extends RelativeLayout {
 
     public void setFillText(List<String> textParts) {
         this.textParts = textParts;
-        spansManager.doFillBlank(textParts, blankLength);
+        spansManager.doFillBlank(textParts, blankLength, new SparseIntArray());
+    }
+
+    public void setFillText(List<String> textParts, SparseIntArray blankWidthArray) {
+        this.textParts = textParts;
+        spansManager.doFillBlank(textParts, blankLength, blankWidthArray);
     }
 
     public List<String> getAnswers() {
@@ -125,7 +129,7 @@ public class FillBlankView extends RelativeLayout {
         return builder.toString();
     }
 
-    public void setInputType(int defaultInputType, SparseIntArray inputTypeArray){
+    public void setInputType(int defaultInputType, SparseIntArray inputTypeArray) {
         spansManager.setInputType(defaultInputType, inputTypeArray);
     }
 

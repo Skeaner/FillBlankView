@@ -49,6 +49,9 @@ public class SpansManager {
     private SparseIntArray inputTypeArray = new SparseIntArray();
     private int defaultInputType = InputType.TYPE_CLASS_TEXT;
 
+    private int defaultBlankWidth = InputType.TYPE_CLASS_TEXT;
+    private SparseIntArray blankWidthArray = new SparseIntArray();
+
     public SpansManager(TextView tv,
                         EditText et,
                         float inputTextSize,
@@ -62,10 +65,11 @@ public class SpansManager {
         this.inputTextColor = inputTextColor;
     }
 
-    public void doFillBlank(List<String> textParts, int blankWidth) {
+    protected void doFillBlank(List<String> textParts, int defaultBlankWidth, SparseIntArray blankWidthArray) {
+        this.defaultBlankWidth = defaultBlankWidth;
+        this.blankWidthArray = blankWidthArray;
         String fullText = TextUtils.join(FILL_TAG, textParts);
         mTv.setMovementMethod(Method);
-
         Spanned spanned = Html.fromHtml(fullText, null, new Html.TagHandler() {
             int index = 0;
 
@@ -75,7 +79,7 @@ public class SpansManager {
                     TextPaint paint = new TextPaint(mTv.getPaint());
                     paint.setTextSize(inputTextSize);
                     paint.setColor(inputTextColor);
-                    ReplaceSpan span = new ReplaceSpan(mTv.getContext(), paint, blankWidth);
+                    ReplaceSpan span = new ReplaceSpan(mTv.getContext(), paint, blankWidthArray.get(index, defaultBlankWidth));
                     span.mOnClick = onClickListener;
                     span.mText = "";
                     span.id = index++;
@@ -247,8 +251,8 @@ public class SpansManager {
         }
     }
 
-    public void setInputType(int defaultInputType, SparseIntArray inputTypeArray){
-        this.defaultInputType =defaultInputType;
+    public void setInputType(int defaultInputType, SparseIntArray inputTypeArray) {
+        this.defaultInputType = defaultInputType;
         this.inputTypeArray = inputTypeArray;
     }
 }

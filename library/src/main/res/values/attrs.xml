@@ -6,6 +6,6 @@
         <attr name="fbvContentTextColor" format="reference|color"/>
         <attr name="fbvInputTextColor" format="reference|color"/>
         <attr name="fbvLineSpacingMultiplier" format="float"/>
-        <attr name="fbvBlankWidth" format="reference|dimension"/>
+        <attr name="fbvDefaultBlankWidth" format="reference|dimension"/>
     </declare-styleable>
 </resources>
