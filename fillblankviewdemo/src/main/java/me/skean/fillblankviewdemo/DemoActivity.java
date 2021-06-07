@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Arrays;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,14 +18,13 @@ public class DemoActivity extends AppCompatActivity {
 
     private FillBlankView fillBlankView;
 
-    private String mTestStr = "我是个________学生,我有一个梦想，我要成为像____，____一样的人.";
 
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
         fillBlankView = findViewById(R.id.fbvTest);
-        fillBlankView.setFillText(mTestStr);
+        fillBlankView.setFillText(Arrays.asList("我是个", "学生,我有一个梦想，我要成为像" ,"，","一样的人."));
         findViewById(R.id.btn_submit).setOnClickListener(view -> {
             Toast.makeText(this, fillBlankView.getPlainText(), Toast.LENGTH_LONG).show();
         });

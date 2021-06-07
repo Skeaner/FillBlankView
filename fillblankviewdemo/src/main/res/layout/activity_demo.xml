@@ -12,6 +12,12 @@
         android:text="提交答案" />
 
     <me.skean.fillblankview.FillBlankView
+        app:fbvBlankWidth="120dp"
+        app:fbvContentTextSize="16sp"
+        app:fbvContentTextColor="#666666"
+        app:fbvInputTextSize="16sp"
+        app:fbvInputTextColor="@color/ggfx_dark_blue"
+        app:fbvLineSpacingMultiplier="1.5"
         android:layout_below="@id/btn_submit"
         android:id="@+id/fbvTest"
         android:layout_width="match_parent"

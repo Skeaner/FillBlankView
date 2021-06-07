@@ -1,7 +1,5 @@
 package me.skean.fillblankview;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.text.Editable;
@@ -10,6 +8,7 @@ import android.text.Layout;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,9 +27,9 @@ import java.util.List;
 
 public class SpansManager {
 
-    private static final String SPILT_TAG = "____";
-    private static final String FILL_TAG = "&nbsp;<edit>&nbsp;";//fix bugs -----多个空连续的情况下
-    private static final String FILL_TAG_NAME = "edit";
+    public static final String SPILT_TAG = "_";
+    private final String FILL_TAG = "&nbsp;<edit>&nbsp;";//fix bugs -----多个空连续的情况下
+    private final String FILL_TAG_NAME = "edit";
     private TextView mTv;
     private EditText mEt;
     protected ArrayList<ReplaceSpan> mSpans;
@@ -42,30 +41,41 @@ public class SpansManager {
     private ReplaceSpan mCheckedSpan;//当前选中的空格
     private ReplaceSpan.OnClickListener onClickListener;
 
-    public SpansManager(TextView tv, EditText et, ReplaceSpan.OnClickListener onClickListener) {
+    private float inputTextSize;
+    private int inputTextColor;
+
+    public SpansManager(TextView tv,
+                        EditText et,
+                        float inputTextSize,
+                        int inputTextColor,
+                        ReplaceSpan.OnClickListener onClickListener) {
         this.mTv = tv;
         this.mEt = et;
         this.onClickListener = onClickListener;
         mSpans = new ArrayList<>();
+        this.inputTextSize = inputTextSize;
+        this.inputTextColor = inputTextColor;
     }
 
-    public void doFillBlank(String examStr) {
+    public void doFillBlank(List<String> textParts, int blankWidth) {
+        String fullText = TextUtils.join(FILL_TAG, textParts);
         mTv.setMovementMethod(Method);
-        String quesOptionAsksResult = examStr.replaceAll(SPILT_TAG, FILL_TAG);
-        Spanned spanned = Html.fromHtml(quesOptionAsksResult, null, new Html.TagHandler() {
+
+        Spanned spanned = Html.fromHtml(fullText, null, new Html.TagHandler() {
             int index = 0;
 
             @Override
             public void handleTag(boolean opening, String tag, Editable output, XMLReader xmlReader) {
                 if (tag.equalsIgnoreCase(FILL_TAG_NAME) && opening) {
                     TextPaint paint = new TextPaint(mTv.getPaint());
-                    paint.setColor(mTv.getResources().getColor(R.color.ggfx_dark_blue));
-                    ReplaceSpan span = new ReplaceSpan(mTv.getContext(), paint);
+                    paint.setTextSize(inputTextSize);
+                    paint.setColor(inputTextColor);
+                    ReplaceSpan span = new ReplaceSpan(mTv.getContext(), paint, blankWidth);
                     span.mOnClick = onClickListener;
                     span.mText = "";
                     span.id = index++;
                     mSpans.add(span);
-                    output.setSpan(span, output.length() - 1, output.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    output.setSpan(span, output.length() -1, output.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
         });
@@ -83,10 +93,10 @@ public class SpansManager {
         for (int i = 0; i < mSpans.size(); i++) {
             ReplaceSpan replaceSpan = mSpans.get(i);
             if (i == position) {
-                replaceSpan.setDrawTextColor(R.color.red);
+                replaceSpan.setDrawTextColorRes(R.color.red);
             }
             else {
-                replaceSpan.setDrawTextColor(R.color.ggfx_dark_blue);
+                replaceSpan.setDrawTextColor(inputTextColor);
             }
             mTv.invalidate();
         }

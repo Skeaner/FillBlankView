@@ -24,6 +24,8 @@ public class FillBlankView extends RelativeLayout {
     private TextView tvContent;
     private EditText etInput;
     private SpansManager spansManager;
+    private int blankLength;
+    private List<String> textParts;
 
     public FillBlankView(Context context) {
         this(context, null);
@@ -39,18 +41,20 @@ public class FillBlankView extends RelativeLayout {
         tvContent = findViewById(R.id.fbvTvContent);
         etInput = findViewById(R.id.fbvEtInput);
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FillBlankView, defStyleAttr, 0);
-        float textSize = a.getDimension(R.styleable.FillBlankView_fbvTextSize, DensityUtils.sp2px(context, 15));
+        float contentTextSize = a.getDimension(R.styleable.FillBlankView_fbvContentTextSize, DensityUtils.sp2px(context, 15));
         int contentTextColor = a.getColor(R.styleable.FillBlankView_fbvContentTextColor, Color.BLACK);
         float lineSpacing = a.getFloat(R.styleable.FillBlankView_fbvLineSpacingMultiplier, 1.4f);
+        float inputTextSize = a.getDimension(R.styleable.FillBlankView_fbvInputTextSize, DensityUtils.sp2px(context, 15));
         int inputTextColor = a.getColor(R.styleable.FillBlankView_fbvInputTextColor, Color.BLACK);
-        tvContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        blankLength = (int) a.getDimension(R.styleable.FillBlankView_fbvBlankWidth, DensityUtils.dp2px(context, 80));
+        tvContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, contentTextSize);
         tvContent.setTextColor(contentTextColor);
         tvContent.setLineSpacing(0, lineSpacing);
-        etInput.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        etInput.setTextSize(TypedValue.COMPLEX_UNIT_PX, inputTextSize);
         etInput.setTextColor(inputTextColor);
         a.recycle();
 
-        spansManager = new SpansManager(tvContent, etInput, (v, id, span) -> {
+        spansManager = new SpansManager(tvContent, etInput, inputTextSize, inputTextColor, (v, id, span) -> {
             spansManager.setData(etInput.getText().toString(), null, spansManager.mOldSpan);
             spansManager.mOldSpan = id;
             //如果当前span身上有值，先赋值给et身上
@@ -79,28 +83,27 @@ public class FillBlankView extends RelativeLayout {
         for (ReplaceSpan mSpan : spansManager.mSpans) {
             spanList.add(mSpan.mText);
         }
-        Bundle bundle =  new Bundle();
+        Bundle bundle = new Bundle();
         bundle.putCharSequenceArrayList("mSpans", spanList);
-        bundle.putParcelable("parents",  super.onSaveInstanceState());
-        return  bundle;
+        bundle.putParcelable("parents", super.onSaveInstanceState());
+        return bundle;
     }
-
-
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
         Bundle bundle = (Bundle) state;
-        ArrayList<CharSequence> list  = bundle.getCharSequenceArrayList("mSpans");
+        ArrayList<CharSequence> list = bundle.getCharSequenceArrayList("mSpans");
         for (int i = 0; i < list.size(); i++) {
             spansManager.mSpans.get(i).mText = list.get(i).toString();
         }
-        Parcelable  parentState = bundle.getParcelable("parents");
+        Parcelable parentState = bundle.getParcelable("parents");
         super.onRestoreInstanceState(parentState);
         etInput.setText(null);
     }
 
-    public void setFillText(String fillText) {
-        spansManager.doFillBlank(fillText);
+    public void setFillText(List<String> textParts) {
+        this.textParts = textParts;
+        spansManager.doFillBlank(textParts, blankLength);
     }
 
     public List<String> getAnswers() {
@@ -109,9 +112,15 @@ public class FillBlankView extends RelativeLayout {
     }
 
     public String getPlainText() {
-        spansManager.setData(etInput.getText().toString(), null, spansManager.mOldSpan);
-        return  tvContent.getText().toString();
+        List<String> answers = getAnswers();
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < textParts.size(); i++) {
+            builder.append(textParts.get(i));
+            if (i < answers.size()) {
+                builder.append(answers.get(i));
+            }
+        }
+        return builder.toString();
     }
-
 
 }

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FillBlankView">
-        <attr name="fbvTextSize" format="reference|dimension"/>
+        <attr name="fbvContentTextSize" format="reference|dimension"/>
+        <attr name="fbvInputTextSize" format="reference|dimension"/>
         <attr name="fbvContentTextColor" format="reference|color"/>
         <attr name="fbvInputTextColor" format="reference|color"/>
-        <attr name="fbvLineSpacingMultiplier" format="fraction"/>
+        <attr name="fbvLineSpacingMultiplier" format="float"/>
+        <attr name="fbvBlankWidth" format="reference|dimension"/>
     </declare-styleable>
 </resources>

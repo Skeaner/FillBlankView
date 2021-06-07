@@ -26,21 +26,25 @@ public class ReplaceSpan extends ReplacementSpan {
     private final Paint mPaint;
 
     public Object mObject;//回调中的任意对象
-    private int textWidth = 80;//单词的宽度
+    private int textWidth = 120;//单词的宽度
 
     public OnClickListener mOnClick;
     public int id = 0;//回调中的对应Span的ID
 
 
-    public ReplaceSpan(Context context,Paint paint) {
+    public ReplaceSpan(Context context,Paint paint, int textWidth) {
         this.context = context;
         mPaint = paint;
-        textWidth = DensityUtils.dp2px(context,textWidth);
+        this.textWidth = textWidth;
 
     }
 
-    public void setDrawTextColor(int res){
+    public void setDrawTextColorRes(int res){
         mPaint.setColor(context.getResources().getColor(res));
+    }
+
+    public void setDrawTextColor(int color){
+        mPaint.setColor(color);
     }
 
 
